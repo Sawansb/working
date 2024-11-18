@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:working/home/view/post_page.dart';
+import 'package:working/home/view/post%20list%20page/post_page.dart';
 
 void main() {
   runApp(MaterialApp(home: CSVExample()));

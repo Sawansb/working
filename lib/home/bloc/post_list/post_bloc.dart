@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:working/home/bloc/post_events.dart';
-import 'package:working/home/bloc/post_states.dart';
-import 'package:working/home/repo/post_repo.dart';
+import 'package:working/home/bloc/post_list/post_events.dart';
+import 'package:working/home/bloc/post_list/post_states.dart';
+import 'package:working/home/model/post_model.dart';
+import 'package:working/home/repo/post%20list/post_repo.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
   final PostRepository _repository;
@@ -12,8 +13,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(PostLoading());
       try {
         final response = await _repository.fetchPosts();
-        emit(PostLoaded(
-            response.data)); // Assuming response.data is a list of posts
+        // Convert response data into a list of Post objects
+        List<Post> posts = postListFromJson(response.data);
+        emit(PostLoaded(posts)); // Pass the list of posts
       } catch (error) {
         emit(PostError(error.toString()));
       }
@@ -24,7 +26,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(PostLoading());
       try {
         final response = await _repository.createPost(event.postData);
-        emit(PostLoaded([response.data])); // Show the newly created post
+        // Assuming the created post is returned as a single object
+        Post newPost = Post.fromJson(response.data);
+        emit(PostLoaded([newPost])); // Show the newly created post
       } catch (error) {
         emit(PostError(error.toString()));
       }
